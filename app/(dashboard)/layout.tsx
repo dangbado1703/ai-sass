@@ -1,4 +1,6 @@
 import Sidebar from "@/components/sidebar";
+import MobileSidebar from "@/components/sidebar/mobile/mobile-sidebar";
+import UpgradeProModal from "@/components/sidebar/upgrade-promodal";
 import Topbar from "@/components/topbar";
 import { TLayoutProps } from "@/contants/type";
 import { cn } from "@/lib/utils";
@@ -18,9 +20,21 @@ const DashboardLayout = ({ children }: TLayoutProps) => {
         <Sidebar
           userLimitCount={1}
           isProPlan={false}
-          className={cn("fixed left-0 z-20 w-80 hidden [&:has]")}
+          className={cn(
+            "fixed left-0 z-20 w-80 hidden [&:has(is-navbar-minimal)]:w-fit",
+            "lg:block"
+          )}
         />
-        {children}
+        <MobileSidebar userLimitCount={1} isProPlan={false} />
+        <UpgradeProModal isProPlan={false} />
+        <div
+          className={cn(
+            "bg-background h-[calc(100vh-56px)]",
+            "lg:rounded-3xl lg:p-7"
+          )}
+        >
+          {children}
+        </div>
       </main>
     </div>
   );

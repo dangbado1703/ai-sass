@@ -1,24 +1,19 @@
 "use client";
 
+import { MAX_FREE_COUNTS } from "@/contants/contants";
+import { TSidebarProps } from "@/contants/type";
 import { cn } from "@/lib/utils";
 import { useSidebarStore } from "@/stores/sidebar-store";
-import { ClassValue } from "clsx";
+import { UserButton, useUser } from "@clerk/nextjs";
 import React from "react";
 import Logo from "../logo";
-import SidebarToggle from "./sidebar-toggle";
-import Navbar from "./navbar";
-import { UserButton, useUser } from "@clerk/nextjs";
-import { MAX_FREE_COUNTS } from "@/contants/contants";
 import { Progress } from "../ui/progress";
+import Navbar from "./navbar";
+import SidebarToggle from "./sidebar-toggle";
+import SubscriptionButton from "./subcription-button";
 import ThemeToggle from "./theme-toggle";
-import SubcriptionButton from "./subcription-button";
 
-interface SidebarProps {
-  className?: string;
-  isProPlan?: boolean;
-  userLimitCount: number;
-}
-const Sidebar: React.FC<SidebarProps> = ({
+const Sidebar: React.FC<TSidebarProps> = ({
   userLimitCount,
   className,
   isProPlan,
@@ -44,36 +39,36 @@ const Sidebar: React.FC<SidebarProps> = ({
           isMinimal && "lg:left-3"
         )}
       >
-        <div className="mb-4 p-4 rounded-lg bg-gray-900">
-          <div className="mb-4 flex items-center">
-            <UserButton afterSignOutUrl="/" />
-            {!isMinimal ? (
-              <>
+        <div className="rounded-lg bg-gray-900">
+          <div className="mb-4 p-4 rounded-lg bg-gray-900">
+            <div className="mb-4 flex items-center">
+              <UserButton afterSignOutUrl="/" />
+              {!isMinimal && (
                 <span className="text-sm ml-4">
                   {user?.emailAddresses?.[0]?.emailAddress}
                 </span>
-                <div className="border-t border-t-gray-900 pt-2">
-                  {!isProPlan ? (
-                    <div>
-                      <div className="mb-4">
-                        <div className="text-center mb-2 text-muted-foreground">
-                          {userLimitCount} / {MAX_FREE_COUNTS} số lần miễn phí
-                        </div>
-                      </div>
-                      <Progress
-                        value={(userLimitCount / MAX_FREE_COUNTS) * 100}
-                        className="bg-gray-950 h-3"
-                        indicatorClassName="gradient-btn"
-                      />
+              )}
+            </div>
+            {!isMinimal && (
+              <div className="border-t border-t-gray-950 pt-2">
+                {!isProPlan && (
+                  <div className="mb-4">
+                    <div className="text-center mb-2 text-muted-foreground font-semibold">
+                      {userLimitCount}/{MAX_FREE_COUNTS} Free Generations
                     </div>
-                  ) : null}
-                </div>
-                <SubcriptionButton isPro={true} />
-              </>
-            ) : null}
-            <ThemeToggle />
+                    <Progress
+                      value={(userLimitCount / MAX_FREE_COUNTS) * 100}
+                      className="bg-gray-950 h-3"
+                      indicatorClassName="gradient-btn"
+                    />
+                  </div>
+                )}
+                <SubscriptionButton isPro={isProPlan} />
+              </div>
+            )}
           </div>
         </div>
+        <ThemeToggle />
       </div>
     </div>
   );
